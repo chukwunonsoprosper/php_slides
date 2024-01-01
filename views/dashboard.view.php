@@ -9,11 +9,7 @@
 <html lang="en">
 
 <!-- PHP code start -->
-<?php
-
-use PhpSlides\view;
-
-?>
+<?php ?>
 <!-- // End PHP code -->
 
 <head>
@@ -39,7 +35,7 @@ use PhpSlides\view;
             <p>
                 PhpSlides let you create a secured Routing in php and secured API, which prevents SQL injections, and from XSS attack & CSRF.
                 <br><br>
-                <? view::slides_include('Injected Code') ?>
+                <? 'Injected Code' ?>
             </p>
         </div>
 
