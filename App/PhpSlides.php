@@ -7,6 +7,8 @@ namespace PhpSlides;
 use Exception;
 use PhpSlides\Controller\Controller;
 
+
+
 /**
  *  -------------------------------------------------------------------------------
  *
@@ -21,7 +23,7 @@ use PhpSlides\Controller\Controller;
  * @category api, router, php router, php
  * @copyright 2023 - 2024 Dave Conco
  * @package php_slides
- * @version ${^1.0.0}
+ * @version ^1.0.0
  * @return void
  * |
  *
@@ -30,6 +32,7 @@ use PhpSlides\Controller\Controller;
 
 final class Route extends Controller
 {
+
   /**
    *  ----------------------------------------------------------------------------------------------------------
    *
@@ -46,8 +49,17 @@ final class Route extends Controller
    */
   public static bool $log;
 
+
+  /**
+   * Gets the full location of project root directory
+   * 
+   * @var string $root_dir
+   * @return string Location directory of project with `__DIR__`
+   */
   public static string $root_dir;
   public static string $request_uri;
+
+
 
   /**
    *  ------------------------------------------------------
@@ -61,8 +73,10 @@ final class Route extends Controller
    */
   public static function file_type(string $filename): bool|string
   {
-    if (is_file($filename)) {
-      if (!extension_loaded('fileinfo')) {
+    if (is_file($filename))
+    {
+      if (!extension_loaded('fileinfo'))
+      {
         throw new Exception(
           'Fileinfo extension is not enabled. Please enable it in your php.ini configuration.',
         );
@@ -75,11 +89,10 @@ final class Route extends Controller
       $file_ext = explode('.', $filename);
       $file_ext = strtolower(end($file_ext));
 
-      if (
-        $file_type === 'text/plain' ||
-        $file_type === 'application/octet-stream'
-      ) {
-        switch ($file_ext) {
+      if ($file_type === 'text/plain' || $file_type === 'application/octet-stream')
+      {
+        switch ($file_ext)
+        {
           case 'css':
             return 'text/css';
           case 'csv':
@@ -118,13 +131,20 @@ final class Route extends Controller
           default:
             return $file_type;
         }
-      } else {
+      }
+      else
+      {
         return $file_type;
       }
-    } else {
+    }
+    else
+    {
       return false;
     }
   }
+
+
+
 
   /**
    *  ---------------------------------------------------------------------------------------------------------
@@ -146,7 +166,8 @@ final class Route extends Controller
    */
   public static function config(bool $request_log = true)
   {
-    try {
+    try
+    {
       self::$log = $request_log;
       self::$root_dir = htmlspecialchars(dirname(getcwd()));
       self::$request_uri = htmlspecialchars($_REQUEST['uri']);
@@ -170,19 +191,24 @@ final class Route extends Controller
        *  |  Config File & Request Router configurations
        *  ----------------------------------------------
        */
-      if (!empty($config_file) && $file_type != null) {
+      if (!empty($config_file) && $file_type != null)
+      {
         $config = $config_file['public'];
         $accept = true;
 
         // loop over the requested URL folders
-        foreach ($url as $index => $value) {
+        foreach ($url as $index => $value)
+        {
+
           /**
            *  -----------------------------------------------
            *  |  Checks if array key from URL exists in the config file
            *  -----------------------------------------------
            */
-          if (array_key_exists($value, $config)) {
-            if (in_array($req_ext, $config[$value]) && $accept != false) {
+          if (array_key_exists($value, $config))
+          {
+            if (in_array($req_ext, $config[$value]) && $accept != false)
+            {
               $accept = $req_ext;
 
               /**
@@ -190,13 +216,17 @@ final class Route extends Controller
                *  |  Checks if the next array key from URL exists in the config file
                *  -----------------------------------------------
                */
-              if (array_key_exists($url[$index + 1], $config)) {
+              if (array_key_exists($url[$index + 1], $config))
+              {
                 continue;
-              } /**
+              }
+              /**
                *  -----------------------------------------------
                *  |  Performs the logic for accepting current file
                *  -----------------------------------------------
-               */ else {
+               */
+              else
+              {
                 http_response_code(200);
                 header("Content-Type: $file_type");
 
@@ -205,32 +235,36 @@ final class Route extends Controller
 
                 exit();
               }
-            } 
+            }
             /**
              *  -----------------------------------------------------------
              *  |  Checks if * or image exists in the config file of the $value
              *  |  Then it accept all types of files or all types of image in the childrens folder
              *  -----------------------------------------------------------
-             */ 
+             */
             elseif (
-              in_array('*', $config[$value]) ||
-              (in_array('image', $config[$value]) &&
-                preg_match('/(image\/*)/', $file_type)) ||
-              (in_array('video', $config[$value]) &&
-                preg_match('/(video\/*)/', $file_type)) ||
-              (in_array('audio', $config[$value]) &&
-                preg_match('/(audio\/*)/', $file_type) &&
-                $accept != false)
-            ) {
+            in_array('*', $config[$value]) ||
+            (in_array('image', $config[$value]) &&
+            preg_match('/(image\/*)/', $file_type)) ||
+            (in_array('video', $config[$value]) &&
+            preg_match('/(video\/*)/', $file_type)) ||
+            (in_array('audio', $config[$value]) &&
+            preg_match('/(audio\/*)/', $file_type) &&
+            $accept != false)
+            )
+            {
               $accept = '*';
 
-              if (array_key_exists($url[$index + 1], $config)) {
+              if (array_key_exists($url[$index + 1], $config))
+              {
                 continue;
               } /**
-               *  -----------------------------------------------
-               *  |  Performs the logic for accepting current file
-               *  -----------------------------------------------
-               */ else {
+                *  -----------------------------------------------
+                *  |  Performs the logic for accepting current file
+                *  -----------------------------------------------
+                */
+              else
+              {
                 http_response_code(200);
                 header("Content-Type: $file_type");
 
@@ -239,7 +273,9 @@ final class Route extends Controller
 
                 exit();
               }
-            } else {
+            }
+            else
+            {
               $accept = false;
             }
           }
@@ -251,10 +287,11 @@ final class Route extends Controller
          *  ------------------------------------------------------------------------
          */
         if (
-          array_key_exists('/', $config) &&
-          count($url) === 1 &&
-          is_file($dir . '/public/' . $url[0])
-        ) {
+        array_key_exists('/', $config) &&
+        count($url) === 1 &&
+        is_file($dir . '/public/' . $url[0])
+        )
+        {
           $req_ext = explode('.', $url[0]);
           $req_ext = strtolower(end($req_ext));
           $root = $config['/'];
@@ -264,16 +301,18 @@ final class Route extends Controller
            *  |  checks if the requested file extension is available in the config files or * which signifies all types of extension
            *  ---------------------------------------------------------------------------------------------
            */
-          for ($i = 0; $i < count($root); $i++) {
+          for ($i = 0; $i < count($root); $i++)
+          {
             $root1 = strtolower($root[$i]);
 
             if (
-              $root1 === $req_ext ||
-              $root1 === '*' ||
-              ($root1 === 'image' && preg_match('/(image\/*)/', $req_ext)) ||
-              ($root1 === 'video' && preg_match('/(video\/*)/', $req_ext)) ||
-              ($root1 === 'audio' && preg_match('/(audio\/*)/', $req_ext))
-            ) {
+            $root1 === $req_ext ||
+            $root1 === '*' ||
+            ($root1 === 'image' && preg_match('/(image\/*)/', $req_ext)) ||
+            ($root1 === 'video' && preg_match('/(video\/*)/', $req_ext)) ||
+            ($root1 === 'audio' && preg_match('/(audio\/*)/', $req_ext))
+            )
+            {
               http_response_code(200);
               header("Content-Type: $file_type");
 
@@ -302,7 +341,9 @@ final class Route extends Controller
       echo $content;
 
       $request_log == true ? (self::$log = true) : (self::$log = false);
-    } catch (Exception $e) {
+    }
+    catch ( Exception $e )
+    {
       print $e->getMessage();
       exit();
     }
@@ -330,6 +371,7 @@ final class Route extends Controller
     $callback,
     string $method = '*',
   ) {
+
     /**
      *  --------------------------------------------------------------
      *
@@ -341,7 +383,8 @@ final class Route extends Controller
      * --------------------------------------------------------------
      */
 
-    if ((is_array($route) && in_array('*', $route)) || $route === '*') {
+    if ((is_array($route) && in_array('*', $route)) || $route === '*')
+    {
       header('HTTP/1.0 404 Not Found');
       header('Content-Type: */*');
 
@@ -358,12 +401,15 @@ final class Route extends Controller
     $paramKey = [];
 
     // finding if there is any {?} parameter in $route
-    if (is_string($route)) {
+    if (is_string($route))
+    {
       preg_match_all('/(?<={).+?(?=})/', $route, $paramMatches);
     }
 
     // if the route does not contain any param call routing();
-    if (empty($paramMatches[0]) || is_array($route)) {
+    if (empty($paramMatches[0]) || is_array($route))
+    {
+
       /**
        *  ------------------------------------------------------
        *  |  Check if $callback is a callable function
@@ -371,34 +417,40 @@ final class Route extends Controller
        *  |  it's a string of text or html document
        *  ------------------------------------------------------
        */
-
       $callback = self::routing($route, $callback, $method);
 
-      if ($callback) {
+      if ($callback)
+      {
         if (
-          is_array($callback) &&
-          (preg_match('/(Controller)/', $callback[0], $matches) &&
-            count($matches) > 1)
-        ) {
+        is_array($callback) &&
+        (preg_match('/(Controller)/', $callback[0], $matches) &&
+        count($matches) > 1)
+        )
+        {
           print_r(
             self::controller(
               $callback[0],
               count($callback) > 1 ? $callback[1] : '',
             ),
           );
-        } else {
+        }
+        else
+        {
           print_r(is_callable($callback) ? $callback() : $callback);
         }
 
         self::log();
         exit();
-      } else {
+      }
+      else
+      {
         return;
       }
     }
 
     // setting parameters names
-    foreach ($paramMatches[0] as $key) {
+    foreach ($paramMatches[0] as $key)
+    {
       $paramKey[] = $key;
     }
 
@@ -409,10 +461,13 @@ final class Route extends Controller
      *  ----------------------------------------------
      */
 
-    if (!empty(self::$request_uri)) {
+    if (!empty(self::$request_uri))
+    {
       $route = preg_replace("/(^\/)|(\/$)/", '', $route);
       $reqUri = preg_replace("/(^\/)|(\/$)/", '', self::$request_uri);
-    } else {
+    }
+    else
+    {
       $reqUri = '/';
     }
 
@@ -423,8 +478,10 @@ final class Route extends Controller
     $indexNum = [];
 
     // storing index number, where {?} parameter is required with the help of regex
-    foreach ($uri as $index => $param) {
-      if (preg_match('/{.*}/', $param)) {
+    foreach ($uri as $index => $param)
+    {
+      if (preg_match('/{.*}/', $param))
+      {
         $indexNum[] = $index;
       }
     }
@@ -441,14 +498,16 @@ final class Route extends Controller
      *  |  Running for each loop to set the exact index number with reg expression this will help in matching route
      *  ----------------------------------------------------------------------------------
      */
-    foreach ($indexNum as $key => $index) {
+    foreach ($indexNum as $key => $index)
+    {
       /**
        *  --------------------------------------------------------------------------------
        *  |  In case if req uri with param index is empty then return because URL is not valid for this route
        *  --------------------------------------------------------------------------------
        */
 
-      if (empty($reqUri[$index])) {
+      if (empty($reqUri[$index]))
+      {
         return;
       }
 
@@ -472,12 +531,14 @@ final class Route extends Controller
     $reqUri = str_replace('/', '\\/', $reqUri);
 
     // now matching route with regex
-    if (preg_match("/$reqUri/", $route)) {
+    if (preg_match("/$reqUri/", $route))
+    {
       // checks if the requested method is of the given route
       if (
-        strtoupper($_SERVER['REQUEST_METHOD']) !== strtoupper($method) &&
-        $method !== '*'
-      ) {
+      strtoupper($_SERVER['REQUEST_METHOD']) !== strtoupper($method) &&
+      $method !== '*'
+      )
+      {
         http_response_code(405);
         self::log();
         exit('Method Not Allowed');
@@ -487,10 +548,11 @@ final class Route extends Controller
       header('Content-Type: */*');
 
       if (
-        is_array($callback) &&
-        (preg_match('/(Controller)/', $callback[0], $matches) &&
-          count($matches) > 1)
-      ) {
+      is_array($callback) &&
+      (preg_match('/(Controller)/', $callback[0], $matches) &&
+      count($matches) > 1)
+      )
+      {
         print_r(
           self::controller(
             $callback[0],
@@ -498,7 +560,9 @@ final class Route extends Controller
             $req_value,
           ),
         );
-      } else {
+      }
+      else
+      {
         print_r(is_callable($callback) ? $callback(...$req_value) : $callback);
       }
 
@@ -506,6 +570,8 @@ final class Route extends Controller
       exit();
     }
   }
+
+
 
   /**
    *  ---------------------------------------------------------------------------
@@ -524,6 +590,7 @@ final class Route extends Controller
    */
   public static function view(array|string $route, string $view)
   {
+
     /**
      *  ----------------------------------------
      *  |  Replacing first and last forward slashes
@@ -535,17 +602,23 @@ final class Route extends Controller
     $str_route = '';
     $reqUri = preg_replace("/(^\/)|(\/$)/", '', self::$request_uri);
 
-    if (is_array($route)) {
-      for ($i = 0; $i < count($route); $i++) {
+    if (is_array($route))
+    {
+      for ($i = 0; $i < count($route); $i++)
+      {
         $each_route = preg_replace("/(^\/)|(\/$)/", '', $route[$i]);
         array_push($uri, $each_route);
       }
-    } else {
+    }
+    else
+    {
       $str_route = preg_replace("/(^\/)|(\/$)/", '', $route);
     }
 
-    if (in_array($reqUri, $uri) || $reqUri === $str_route) {
-      if (strtoupper($_SERVER['REQUEST_METHOD']) !== 'GET') {
+    if (in_array($reqUri, $uri) || $reqUri === $str_route)
+    {
+      if (strtoupper($_SERVER['REQUEST_METHOD']) !== 'GET')
+      {
         http_response_code(405);
         self::log();
         exit('Method Not Allowed');
@@ -554,13 +627,16 @@ final class Route extends Controller
       // render view page to browser
       $view = view::render($view) !== 'null' ? view::render($view) : $view;
 
-      if ($view != 'null') {
+      if ($view != 'null')
+      {
         print_r($view);
         self::log();
         exit();
       }
     }
   }
+
+
 
   /**
    *  --------------------------------------------------------------
@@ -580,20 +656,26 @@ final class Route extends Controller
     string $new_url,
     int $code = 302,
   ) {
-    if (!empty(self::$request_uri)) {
+    if (!empty(self::$request_uri))
+    {
       $route = preg_replace("/(^\/)|(\/$)/", '', $route);
       $new_url = preg_replace("/(^\/)|(\/$)/", '', $new_url);
       $reqUri = preg_replace("/(^\/)|(\/$)/", '', self::$request_uri);
-    } else {
+    }
+    else
+    {
       $reqUri = '/';
       $new_url = preg_replace("/(^\/)|(\/$)/", '', $new_url);
     }
 
-    if ($reqUri === $route) {
+    if ($reqUri === $route)
+    {
       header("Location: $new_url", true, $code);
       exit();
     }
   }
+
+
 
   /**
    *  --------------------------------------------------------------
@@ -609,6 +691,8 @@ final class Route extends Controller
     self::any($route, $callback, 'GET');
   }
 
+
+
   /**
    *  --------------------------------------------------------------
    *
@@ -622,6 +706,8 @@ final class Route extends Controller
   {
     self::any($route, $callback, 'POST');
   }
+
+
 
   /**
    *  --------------------------------------------------------------
@@ -637,6 +723,8 @@ final class Route extends Controller
     self::any($route, $callback, 'PUT');
   }
 
+
+
   /**
    *  --------------------------------------------------------------
    *
@@ -651,6 +739,8 @@ final class Route extends Controller
     self::any($route, $callback, 'UPDATE');
   }
 
+
+
   /**
    *  --------------------------------------------------------------
    *
@@ -664,6 +754,8 @@ final class Route extends Controller
   {
     self::any($route, $callback, 'PATCH');
   }
+
+
 
   /**
    *  --------------------------------------------------------------
@@ -680,6 +772,8 @@ final class Route extends Controller
   }
 }
 
+
+
 /**
  *  --------------------------------------------------------------
  *
@@ -691,6 +785,7 @@ final class Route extends Controller
  */
 final class view extends Controller
 {
+
   /**
    *  --------------------------------------------------------------
    *
@@ -703,27 +798,35 @@ final class view extends Controller
    */
   final public static function render(string $view): mixed
   {
-    try {
+    try
+    {
       // split :: into array and extract the folder and files
       $file = preg_replace('/(::)|::/', '/', $view);
       $view_path = '/views/' . $file;
 
       $file_uri = Route::$root_dir . $view_path;
 
-      if (is_file($file_uri . '.view.php') && !preg_match('/(..\/)/', $view)) {
+      if (is_file($file_uri . '.view.php') && !preg_match('/(..\/)/', $view))
+      {
         $file_type = Route::file_type($file_uri . '.view.php');
         header("Content-Type: $file_type");
 
         return self::slides_include($file_uri . '.view.php');
-      } elseif (is_file($file_uri) && !preg_match('/(..\/)/', $view)) {
+      }
+      elseif (is_file($file_uri) && !preg_match('/(..\/)/', $view))
+      {
         $file_type = Route::file_type($file_uri);
         header("Content-Type: $file_type");
 
         return self::slides_include($file_uri);
-      } else {
+      }
+      else
+      {
         throw new Exception("No view controller path found called `$view`");
       }
-    } catch (Exception $e) {
+    }
+    catch ( Exception $e )
+    {
       print $e->getMessage();
       return 'null';
     }

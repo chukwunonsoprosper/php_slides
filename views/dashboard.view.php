@@ -9,7 +9,7 @@
 <html lang="en">
 
 <!-- PHP code start -->
-<?php ?>
+<? ?>
 <!-- // End PHP code -->
 
 <head>
