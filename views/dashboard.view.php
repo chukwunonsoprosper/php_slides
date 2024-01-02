@@ -34,8 +34,11 @@
         <div class="description">
             <p>
                 PhpSlides let you create a secured Routing in php and secured API, which prevents SQL injections, and from XSS attack & CSRF.
-                <br><br>
-                <? 'Injected Code' ?>
+            </p>
+            <p>
+                <a href="https://packagist.org/packages/dconco/php_slides" class="link">
+                    <? @view'Click to view documentation' ?>
+                </a>
             </p>
         </div>
 
