@@ -1,6 +1,6 @@
 {
     "name": "dconco/php_slides",
-    "description": "PhpSlides let you create a secured Routing in php and secured API, which prevents SQL injections, and from XSS attack & CSRF.",
+    "description": "PhpSlides a light fast framework for letting you create a secured Routing in php and secured API, which prevents SQL injections, and from XSS attack & CSRF.",
     "homepage": "https://github.com/dconco/php_slides",
     "version": "1.2.1",
     "type": "project",
@@ -20,16 +20,16 @@
             "./configs/env.config.php",
             "./configs/cors.php"
         ],
-        "classmap": ["*"]
+        "classmap": [ "*" ]
     },
     "scripts": {
         "slides-refresh": "composer dump-autoload",
         "create-slides-app": "composer create-project dconco/php_slides"
     },
-    "authors": [{
-        "name": "Dave Conco",
-        "email": "concodave@gmail.com"
-    }],
+    "authors": [ {
+            "name": "Dave Conco",
+            "email": "concodave@gmail.com"
+        } ],
     "require": {
         "php": "^8.0",
         "firebase/php-jwt": "^6.9",

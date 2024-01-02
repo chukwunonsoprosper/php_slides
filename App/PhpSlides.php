@@ -185,6 +185,7 @@ final class Route extends Controller
       $config_file = self::config_file();
 
       $charset = $config_file['charset'];
+      include_once $dir . '/App/bin/constant.php';
 
       /**
        *  ----------------------------------------------
