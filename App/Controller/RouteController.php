@@ -8,6 +8,7 @@ use PhpSlides\Route;
 
 class RouteController
 {
+
   /**
    *  ----------------------------------------------------------------------------------
    *  |
@@ -22,18 +23,23 @@ class RouteController
     $file_path = Route::$root_dir . "/phpslides.config.json";
 
     // checks if the config file exist in project root directory
-    if ($file_path) {
+    if ($file_path)
+    {
       // get json files and convert it to an array
       $config_file = file_get_contents($file_path);
       $config_file = json_decode($config_file, true);
 
       return $config_file;
-    } else {
+    }
+    else
+    {
       throw new Exception(
         "URL request failed. Configuration file for PhpSlides is not found in the root of your project"
       );
     }
   }
+
+
 
   /**
    *  -----------------------------------------------------------
@@ -45,7 +51,8 @@ class RouteController
    */
   public static function slides_include($filename)
   {
-    if (is_file($filename)) {
+    if (is_file($filename))
+    {
       $file_contents = file_get_contents($filename);
 
       $root = strtolower(Route::$root_dir . "/");
@@ -57,7 +64,8 @@ class RouteController
 
       $pattern = '/<include\s+path="([^"]+)"[^>]*\/>/';
 
-      if (preg_match($pattern, $file_contents, $match)) {
+      if (preg_match($pattern, $file_contents, $match))
+      {
         $match = $match[1];
         $file_contents = preg_replace(
           $pattern,
@@ -77,15 +85,22 @@ class RouteController
       $output = ob_get_contents();
       ob_end_clean();
 
-      if ($output != false) {
+      if ($output != false)
+      {
         return $output;
-      } else {
+      }
+      else
+      {
         throw new Exception("Empty file.");
       }
-    } else {
+    }
+    else
+    {
       return false;
     }
   }
+
+
 
   /**
    *  ==============================
@@ -96,27 +111,33 @@ class RouteController
   protected static function routing(
     array|string $route,
     $callback,
-    string $method = "*"
+    string $method = "*",
   ) {
     $uri = [];
     $str_route = "";
     $reqUri = preg_replace("/(^\/)|(\/$)/", "", $_REQUEST["uri"]);
 
-    if (is_array($route)) {
-      for ($i = 0; $i < count($route); $i++) {
+    if (is_array($route))
+    {
+      for ($i = 0; $i < count($route); $i++)
+      {
         $each_route = preg_replace("/(^\/)|(\/$)/", "", $route[$i]);
         array_push($uri, $each_route);
       }
-    } else {
+    }
+    else
+    {
       $str_route = preg_replace("/(^\/)|(\/$)/", "", $route);
     }
 
-    if (in_array($reqUri, $uri) || $reqUri === $str_route) {
+    if (in_array($reqUri, $uri) || $reqUri === $str_route)
+    {
       // checks if the requested method is of the given route
       if (
-        strtoupper($_SERVER["REQUEST_METHOD"]) !== strtoupper($method) &&
-        $method !== "*"
-      ) {
+      strtoupper($_SERVER["REQUEST_METHOD"]) !== strtoupper($method) &&
+      $method !== "*"
+      )
+      {
         http_response_code(405);
         self::log();
         exit("Method Not Allowed");
@@ -126,10 +147,14 @@ class RouteController
       http_response_code(200);
 
       return $callback;
-    } else {
+    }
+    else
+    {
       return false;
     }
   }
+
+
 
   /**
    *  ---------------------------------
@@ -161,12 +186,15 @@ class RouteController
     // all content messages to log
     $content = "$method\t\t\t $http_protocol\t\t\t $http_code\t\t\t $uri\t\t\t $date\n\n";
 
-    if (Route::$log === true) {
+    if (Route::$log === true)
+    {
       $log = fopen($log_path, "a");
       fwrite($log, $content);
       fclose($log);
     }
   }
+
+
 
   /**
    *  Don't use this function!!!
@@ -178,10 +206,12 @@ class RouteController
   protected static function controller(
     object|string $class,
     string $method,
-    array|null $param = null
+    array|null $param = null,
   ) {
     return ClassController::__class($class, $method, $param);
   }
+
+
 
   /**
    *  ==============================
@@ -197,15 +227,21 @@ class RouteController
 
     $class = new $class_name();
 
-    for ($i = 0; $i < count($class_methods); $i++) {
-      if (empty($method) || $method === "__invoke") {
+    for ($i = 0; $i < count($class_methods); $i++)
+    {
+      if (empty($method) || $method === "__invoke")
+      {
         return $param != null ? $class(...$param) : $class();
-      } elseif ($method === $class_methods[$i]) {
+      }
+      elseif ($method === $class_methods[$i])
+      {
         return $param != null ? $class->$method(...$param) : $class->$method();
-      } elseif (
-        count($class_methods) - 1 === $i &&
-        $method !== $class_methods
-      ) {
+      }
+      elseif (
+      count($class_methods) - 1 === $i &&
+      $method !== $class_methods
+      )
+      {
         throw new Exception(
           "No Controller method found as $method. Try using __invoke method.",
           1

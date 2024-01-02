@@ -8,6 +8,8 @@ use Exception;
 use PhpSlides\Route;
 use PhpSlides\Controller\Controller;
 
+
+
 /**
  *  ---------------------------------------------------------------
  *
@@ -19,6 +21,7 @@ use PhpSlides\Controller\Controller;
  */
 final class Api extends Controller
 {
+
   /**
    *  ------------------------------------------------------------------------
    *
@@ -41,9 +44,11 @@ final class Api extends Controller
     string $class_method = "__invoke",
     string $method = "*",
   ) {
-    try {
+    try
+    {
       $real_route = $route;
       $dir = Route::$root_dir;
+
       // will store all the parameters value in this array
       $req = [];
       $req_value = [];
@@ -52,12 +57,15 @@ final class Api extends Controller
       $paramKey = [];
 
       // finding if there is any {?} parameter in $route
-      if (is_string($route)) {
+      if (is_string($route))
+      {
         preg_match_all("/(?<={).+?(?=})/", $route, $paramMatches);
       }
 
       // if the route does not contain any param call routing();
-      if (empty($paramMatches[0]) || is_array($route)) {
+      if (empty($paramMatches[0]) || is_array($route))
+      {
+
         /**
          *  ------------------------------------------------------
          *  |  Check if $class_method is a callable function
@@ -68,33 +76,40 @@ final class Api extends Controller
 
         $class_method = self::routing($route, $class_method, $method);
 
-        if ($class_method) {
+        if ($class_method)
+        {
           ob_start();
           $web_file = include $dir . "/src/web.php";
           ob_end_clean();
 
           if (
-            array_key_exists($real_route, $web_file) &&
-            (preg_match("/(Controller)/", $web_file[$real_route], $matches) &&
-              count($matches) > 1)
-          ) {
+          array_key_exists($real_route, $web_file) &&
+          (preg_match("/(Controller)/", $web_file[$real_route], $matches) &&
+          count($matches) > 1)
+          )
+          {
             http_response_code(200);
             header("Content-Type: application/json");
 
             print_r(self::controller($web_file[$real_route], $class_method));
-          } else {
+          }
+          else
+          {
             throw new Exception("API route class is not registered!");
           }
 
           self::log();
           exit();
-        } else {
+        }
+        else
+        {
           return;
         }
       }
 
       // setting parameters names
-      foreach ($paramMatches[0] as $key) {
+      foreach ($paramMatches[0] as $key)
+      {
         $paramKey[] = $key;
       }
 
@@ -105,10 +120,13 @@ final class Api extends Controller
        *  ----------------------------------------------
        */
 
-      if (!empty(Route::$request_uri)) {
+      if (!empty(Route::$request_uri))
+      {
         $route = preg_replace("/(^\/)|(\/$)/", "", $route);
         $reqUri = preg_replace("/(^\/)|(\/$)/", "", Route::$request_uri);
-      } else {
+      }
+      else
+      {
         $reqUri = "/";
       }
 
@@ -119,8 +137,10 @@ final class Api extends Controller
       $indexNum = [];
 
       // storing index number, where {?} parameter is required with the help of regex
-      foreach ($uri as $index => $param) {
-        if (preg_match("/{.*}/", $param)) {
+      foreach ($uri as $index => $param)
+      {
+        if (preg_match("/{.*}/", $param))
+        {
           $indexNum[] = $index;
         }
       }
@@ -137,14 +157,17 @@ final class Api extends Controller
        *  |  Running for each loop to set the exact index number with reg expression this will help in matching route
        *  ----------------------------------------------------------------------------------
        */
-      foreach ($indexNum as $key => $index) {
+      foreach ($indexNum as $key => $index)
+      {
+
         /**
          *  --------------------------------------------------------------------------------
          *  |  In case if req uri with param index is empty then return because URL is not valid for this route
          *  --------------------------------------------------------------------------------
          */
 
-        if (empty($reqUri[$index])) {
+        if (empty($reqUri[$index]))
+        {
           return;
         }
 
@@ -168,12 +191,14 @@ final class Api extends Controller
       $reqUri = str_replace("/", "\\/", $reqUri);
 
       // now matching route with regex
-      if (preg_match("/$reqUri/", $route)) {
+      if (preg_match("/$reqUri/", $route))
+      {
         // checks if the requested method is of the given route
         if (
-          strtoupper($_SERVER["REQUEST_METHOD"]) !== strtoupper($method) &&
-          $method !== "*"
-        ) {
+        strtoupper($_SERVER["REQUEST_METHOD"]) !== strtoupper($method) &&
+        $method !== "*"
+        )
+        {
           http_response_code(405);
           self::log();
           exit("Method Not Allowed");
@@ -184,10 +209,11 @@ final class Api extends Controller
         ob_end_clean();
 
         if (
-          array_key_exists($real_route, $web_file) &&
-          (preg_match("/(Controller)/", $web_file[$real_route], $matches) &&
-            count($matches) > 1)
-        ) {
+        array_key_exists($real_route, $web_file) &&
+        (preg_match("/(Controller)/", $web_file[$real_route], $matches) &&
+        count($matches) > 1)
+        )
+        {
           http_response_code(200);
           header("Content-Type: application/json");
 
@@ -196,19 +222,24 @@ final class Api extends Controller
               ...$req_value,
             ]),
           );
-        } else {
+        }
+        else
+        {
           throw new Exception("API route class is not registered!");
         }
 
         self::log();
         exit();
       }
-    } catch (Exception $e) {
+    }
+    catch ( Exception $e )
+    {
       http_response_code(500);
       print_r($e->getMessage());
       exit();
     }
   }
+
 
   /**
    *  --------------------------------------------------------------
@@ -226,6 +257,8 @@ final class Api extends Controller
     self::any($route, $class_method, "GET");
   }
 
+
+
   /**
    *  --------------------------------------------------------------
    *
@@ -241,6 +274,8 @@ final class Api extends Controller
   ) {
     self::any($route, $class_method, "POST");
   }
+
+
 
   /**
    *  --------------------------------------------------------------
@@ -258,6 +293,8 @@ final class Api extends Controller
     self::any($route, $class_method, "PUT");
   }
 
+
+
   /**
    *  --------------------------------------------------------------
    *
@@ -274,6 +311,8 @@ final class Api extends Controller
     self::any($route, $class_method, "UPDATE");
   }
 
+
+
   /**
    *  --------------------------------------------------------------
    *
@@ -289,6 +328,8 @@ final class Api extends Controller
   ) {
     self::any($route, $class_method, "PATCH");
   }
+
+
 
   /**
    *  --------------------------------------------------------------
