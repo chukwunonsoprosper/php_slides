@@ -6,5 +6,5 @@ namespace PhpSlides\Controller;
 
 abstract class Controller extends RouteController
 {
-  /* Hidden Body function */
+   /* Hidden Body function */
 }
