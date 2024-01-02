@@ -18,9 +18,9 @@
     <meta name="title" content="PhpSlides | PHP Framework" />
     <title>Dashboard | PhpSlides</title>
 
-    <link rel="apple-touch-icon" href="::view/assets/logo-squared.png" sizes="1000x1000" />
-    <link rel="shortcut icon" href="::view/assets/logo-squared.png" type="image/png" />
-    <link rel="icon" href="::view/assets/logo-squared.png" type="image/png" />
+    <link rel="apple-touch-icon" href="::view/assets/icons/icon.png" sizes="234x234" />
+    <link rel="shortcut icon" href="::view/assets/icons/icon.png" type="image/png" />
+    <link rel="icon" href="::view/assets/icons/icon.png" type="image/png" />
 
     <link rel="stylesheet" type="text/css" href="::view/styles/App.css">
 </head>
@@ -28,7 +28,7 @@
 <body>
     <div class="container">
         <div class="logo">
-            <img src="::view/assets/svg/logo-no-background.svg" alt="PhpSlides Logo">
+            <img src="::view/assets/images/svg/logo-no-background.svg" alt="PhpSlides Logo">
         </div>
 
         <div class="description">
