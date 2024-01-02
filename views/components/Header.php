@@ -9,13 +9,40 @@
 <!-- CSS Links -->
 <link rel="stylesheet" type="text/css" href="::view/styles/App.css">
 
+<!-- Internal Styling -->
 <style>
-    body {
-        margin: 0;
-        display: flex;
-        height: 100svh;
-        flex-flow: column;
-        background: #bb9fe5;
+    @keyframes ZoomIn {
+        from {
+            transform: scale(0, 0);
+        }
+
+        75% {
+            transform: scale(1.2, 1.2);
+        }
+
+        to {
+            transform: scale(1, 1);
+        }
+    }
+
+    @keyframes ReSeize {
+        50% {
+            transform: scale(1.15, 1.15);
+        }
+
+        100% {
+            transform: scale(1, 1);
+        }
+    }
+
+    @keyframes ButtonAnim {
+        0% {
+            transform: scale(1.3, 1.3);
+        }
+
+        100% {
+            transform: scale(1, 1);
+        }
     }
 
     .container {
