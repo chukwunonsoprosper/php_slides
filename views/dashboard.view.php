@@ -9,20 +9,12 @@
 <html lang="en">
 
 <!-- PHP code start -->
-<? ?>
+<? '' ?>
 <!-- // End PHP code -->
 
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="title" content="PhpSlides | PHP Framework" />
+    <include path="::root/views/components/Header.php" ! />
     <title>Dashboard | PhpSlides</title>
-
-    <link rel="apple-touch-icon" href="::view/assets/icons/icon.png" sizes="234x234" />
-    <link rel="shortcut icon" href="::view/assets/icons/icon.png" type="image/png" />
-    <link rel="icon" href="::view/assets/icons/icon.png" type="image/png" />
-
-    <link rel="stylesheet" type="text/css" href="::view/styles/App.css">
 </head>
 
 <body>
@@ -36,7 +28,7 @@
                 PhpSlides let you create a secured Routing in php and secured API, which prevents SQL injections, and from XSS attack & CSRF.
             </p>
             <p>
-                <a href="https://packagist.org/packages/dconco/php_slides" class="link">
+                <a href="//packagist.org/packages/dconco/php_slides" class="link">
                     <? 'Click to view documentation' ?>
                 </a>
             </p>

@@ -62,28 +62,42 @@ class RouteController
       $self = htmlspecialchars($_SERVER["PHP_SELF"]);
       $view = substr_replace($self, "/", strrpos($self, $find), strlen($find));
 
-      $pattern = '/<include\s+path="([^"]+)"[^>]*\/>/';
+      $pattern = '/<include\s+path="([^"]+)"\s*!?\s*\/>/';
 
-      if (preg_match($pattern, $file_contents, $match))
+      // replace <include> match elements
+      $file_contents = preg_replace_callback($pattern, function ($matches)
       {
-        $match = $match[1];
-        $file_contents = preg_replace(
-          $pattern,
-          "<? @view slides_include('$match') ?>",
-          $file_contents
-        );
+        $path = trim($matches[1]);
+        return "<? slides_include('$path') ?>";
+      }, $file_contents);
+
+      // replace <? elements
+      $file_contents = preg_replace_callback('/<\? ([^?]*)\?>/s', function ($matches)
+      {
+        $val = trim($matches[1]);
+        return "<?php echo($val) ?>";
+      }, $file_contents);
+
+      $file_contents = str_replace('::view/', $view, $file_contents);
+      $file_contents = str_replace('::root/', $root, $file_contents);
+
+      try
+      {
+        $tempFileName = tempnam(sys_get_temp_dir(), 'slides_');
+        $file = fopen($tempFileName, 'w');
+        fwrite($file, $file_contents);
+        fclose($file);
+
+        ob_start();
+        include $tempFileName;
+        $output = ob_get_clean();
+        unlink($tempFileName);
       }
+      catch ( Exception $e )
+      {
+        throw new Exception($e->getMessage(), 1);
 
-      $file_contents = str_replace("::view/", $view, $file_contents);
-      $file_contents = str_replace("::root/", $root, $file_contents);
-      $file_contents = str_replace("@view", "echo", $file_contents);
-      $file_contents = str_replace("<?php", "<?", $file_contents);
-      $file_contents = str_replace("<?", "<?php", $file_contents);
-
-      ob_start();
-      eval("?>" . $file_contents);
-      $output = ob_get_contents();
-      ob_end_clean();
+      }
 
       if ($output != false)
       {
@@ -132,7 +146,6 @@ class RouteController
 
     if (in_array($reqUri, $uri) || $reqUri === $str_route)
     {
-      // checks if the requested method is of the given route
       if (
       strtoupper($_SERVER["REQUEST_METHOD"]) !== strtoupper($method) &&
       $method !== "*"
