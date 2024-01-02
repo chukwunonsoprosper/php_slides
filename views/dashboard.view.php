@@ -37,7 +37,7 @@
             </p>
             <p>
                 <a href="https://packagist.org/packages/dconco/php_slides" class="link">
-                    <? @view'Click to view documentation' ?>
+                    <? 'Click to view documentation' ?>
                 </a>
             </p>
         </div>
